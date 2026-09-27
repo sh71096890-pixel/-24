@@ -6,170 +6,108 @@
     <title>정부24</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; user-select: none; }
-        body { background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; min-height: 100divh; }
+        body { background-color: #f2f4f7; display: flex; justify-content: center; align-items: center; min-height: 100dvh; overflow: hidden; }
         
-        .app-container { width: 100%; max-width: 412px; height: 100dvh; max-height: 892px; background: #ffffff; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-radius: 20px; }
+        .app-container { width: 100%; max-width: 412px; height: 100dvh; background: #ffffff; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
         
-        /* Splash Screen */
-        .splash-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #003366; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; transition: opacity 0.5s ease; }
-        .splash-logo { font-size: 2rem; font-weight: 900; margin-bottom: 10px; letter-spacing: -1px; }
-        .splash-sub { font-size: 0.9rem; color: #cbd5e1; }
+        /* 정부24 공식 컬러: 네이비 블루 계열 */
+        .header { background: #004098; color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .header .logo { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
+        .header .icons { display: flex; gap: 16px; font-size: 1.1rem; }
 
-        /* Lock Screen */
-        .lock-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #003366; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; transition: opacity 0.3s ease; }
-        .lock-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; }
-        .lock-subtitle { font-size: 0.85rem; color: #a0aec0; margin-bottom: 32px; }
-        .pin-dots { display: flex; gap: 14px; margin-bottom: 40px; }
-        .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #ffffff; background: transparent; }
-        .dot.active { background: #ffffff; }
-        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 28px; text-align: center; }
-        .key { width: 68px; height: 68px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; cursor: pointer; }
-        .key:active { background: rgba(255,255,255,0.3); }
+        /* 사용자 간편 정보 배너 */
+        .user-banner { background: #eef3fb; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; color: #1e293b; font-weight: 600; }
+        .user-banner span { color: #004098; font-weight: 700; }
+        .btn-change-photo { font-size: 0.75rem; background: #004098; color: white; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
 
-        /* Header */
-        .header { background: #003366; color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 1.1rem; flex-shrink: 0; }
-        .header .badge { font-size: 0.75rem; background: rgba(255,255,255,0.18); padding: 5px 10px; border-radius: 20px; color: #e0e6ed; cursor: pointer; }
-
-        /* Content Area & Tabs */
-        .content { flex: 1; display: flex; flex-direction: column; background: #f8fafc; overflow-y: auto; }
-        .tab-view { display: none; flex: 1; flex-direction: column; padding: 16px; gap: 16px; }
+        /* Content Area */
+        .content { flex: 1; display: flex; flex-direction: column; background: #f8fafc; overflow-y: auto; padding: 16px; gap: 16px; }
+        .tab-view { display: none; flex: 1; flex-direction: column; gap: 16px; }
         .tab-view.active { display: flex; }
 
-        /* 홈 화면 스타일 */
-        .home-banner { background: linear-gradient(135deg, #003366 0%, #004080 100%); color: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,51,102,0.15); cursor: pointer; }
-        .home-banner h3 { font-size: 1.1rem; margin-bottom: 6px; }
-        .home-banner p { font-size: 0.82rem; color: #cbd5e1; }
-        
-        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .menu-btn { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 8px; text-align: center; font-size: 0.75rem; color: #334155; font-weight: 600; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .menu-btn span { display: block; font-size: 1.4rem; margin-bottom: 6px; }
-
-        .section-title { font-size: 0.95rem; font-weight: bold; color: #1e293b; margin-top: 4px; }
-        .notice-box { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; font-size: 0.85rem; color: #475569; line-height: 1.4; }
-
-        /* 신분증 카드 스타일 */
-        .id-card { background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 8px 20px rgba(0,51,102,0.08); border: 1px solid #dce4ed; position: relative; }
-        .security-line { height: 4px; background: linear-gradient(90deg, #003366, #28a745, #003366); background-size: 200% 100%; animation: shimmer 2.5s infinite linear; border-radius: 2px; margin-bottom: 16px; }
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        /* 주민등록증 모바일 확인서비스 카드 스타일 */
+        .id-card { background: linear-gradient(135deg, #ffffff 0%, #f4f7fc 100%); border-radius: 16px; padding: 20px; box-shadow: 0 6px 16px rgba(0,64,152,0.08); border: 1px solid #cbd5e1; position: relative; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 2px solid #004098; padding-bottom: 8px; }
+        .card-title { font-size: 0.95rem; font-weight: 800; color: #004098; letter-spacing: -0.5px; }
+        .card-gov { font-size: 0.7rem; color: #64748b; font-weight: 600; }
 
         .profile { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; }
-        .photo-frame { width: 90px; height: 115px; background: #e2e8f0; border-radius: 8px; border: 1px solid #cbd5e1; overflow: hidden; flex-shrink: 0; position: relative; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .photo-frame { width: 90px; height: 115px; background: #e2e8f0; border-radius: 6px; border: 1px solid #cbd5e1; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: none; }
-        .photo-placeholder { font-size: 0.7rem; color: #64748b; padding: 10px; line-height: 1.3; }
+        .photo-placeholder { font-size: 0.65rem; color: #64748b; text-align: center; padding: 10px; font-weight: 600; }
         
         .info-box { flex: 1; }
-        .info-box .name { font-size: 1.3rem; font-weight: 800; color: #0f172a; margin-bottom: 4px; letter-spacing: 2px; }
-        .info-box .birth { font-size: 0.95rem; font-weight: 600; color: #334155; margin-bottom: 6px; }
-        .info-box .address { font-size: 0.8rem; color: #64748b; line-height: 1.3; word-break: keep-all; }
+        .info-box .name { font-size: 1.3rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; letter-spacing: 2px; }
+        .info-box .birth { font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 8px; }
+        .info-box .address { font-size: 0.75rem; color: #475569; line-height: 1.3; }
 
-        .qr-wrapper { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 14px; }
-        .qr-box { width: 130px; height: 130px; margin: 0 auto 8px; background: white; padding: 6px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; }
+        .qr-wrapper { background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 14px; text-align: center; margin-bottom: 14px; }
+        .qr-box { width: 120px; height: 120px; margin: 0 auto 8px; background: white; padding: 4px; display: flex; align-items: center; justify-content: center; }
         .qr-box img { width: 100%; height: 100%; object-fit: contain; }
         
-        .timer-container { font-size: 0.8rem; font-weight: 700; color: #dc2626; display: flex; justify-content: center; align-items: center; gap: 6px; }
+        .timer-container { font-size: 0.8rem; font-weight: 700; color: #d32f2f; display: flex; justify-content: center; align-items: center; gap: 6px; }
         .progress-bar { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; margin-top: 6px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #dc2626; width: 100%; transition: width 1s linear; }
+        .progress-fill { height: 100%; background: #d32f2f; width: 100%; transition: width 1s linear; }
 
-        .btn-toggle { width: 100%; padding: 12px; background: #003366; color: white; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
-        .footer { text-align: center; font-size: 0.7rem; color: #64748b; line-height: 1.3; padding: 5px 0; }
+        .btn-toggle { width: 100%; padding: 12px; background: #004098; color: white; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+        .footer { text-align: center; font-size: 0.7rem; color: #64748b; line-height: 1.3; padding: 4px 0; }
+
+        /* 서비스 메뉴 화면 스타일 */
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .menu-item { background: white; padding: 16px 10px; border-radius: 12px; text-align: center; font-size: 0.8rem; font-weight: 600; color: #1e293b; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); cursor: pointer; }
 
         /* Bottom Navigation Bar */
         .bottom-nav { height: 60px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; align-items: center; flex-shrink: 0; }
         .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; color: #64748b; cursor: pointer; gap: 4px; }
-        .nav-item.active { color: #003366; font-weight: bold; }
+        .nav-item.active { color: #004098; font-weight: bold; }
         .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
 
         #file-input { display: none; }
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- 1. Splash Screen -->
-    <div class="splash-screen" id="splash-screen">
-        <div class="splash-logo">정부24</div>
-        <div class="splash-sub">대한민국 공식 정부 서비스</div>
-    </div>
-
-    <!-- 2. Lock Screen (비밀번호: 0978) -->
-    <div class="lock-screen hidden" id="lock-screen">
-        <div class="lock-title">비밀번호 입력</div>
-        <div class="lock-subtitle">주민등록증 모바일 확인서비스</div>
-        <div class="pin-dots">
-            <div class="dot" id="dot-0"></div>
-            <div class="dot" id="dot-1"></div>
-            <div class="dot" id="dot-2"></div>
-            <div class="dot" id="dot-3"></div>
-        </div>
-        <div class="keypad">
-            <div class="key" onclick="pressKey('1')">1</div>
-            <div class="key" onclick="pressKey('2')">2</div>
-            <div class="key" onclick="pressKey('3')">3</div>
-            <div class="key" onclick="pressKey('4')">4</div>
-            <div class="key" onclick="pressKey('5')">5</div>
-            <div class="key" onclick="pressKey('6')">6</div>
-            <div class="key" onclick="pressKey('7')">7</div>
-            <div class="key" onclick="pressKey('8')">8</div>
-            <div class="key" onclick="pressKey('9')">9</div>
-            <div class="key" style="background:transparent;"></div>
-            <div class="key" onclick="pressKey('0')">0</div>
-            <div class="key" style="background:transparent; font-size:1rem;" onclick="deleteKey()">←</div>
-        </div>
-    </div>
-
-    <!-- 3. Header -->
+    <!-- Header -->
     <div class="header">
-        <div id="header-title">정부24 홈</div>
-        <div class="badge" onclick="handleSecretClick()">주민등록증 모바일 확인서비스</div>
+        <div class="logo">정부24</div>
+        <div class="icons">🔍 ≡</div>
     </div>
 
-    <!-- 4. Content Tabs -->
+    <!-- User Banner -->
+    <div class="user-banner">
+        <div>안녕하세요, <span>박상현</span>님</div>
+        <div class="btn-change-photo" onclick="triggerPhotoUpload()">사진 변경</div>
+    </div>
+
+    <!-- Content Tabs -->
     <div class="content">
-        <!-- Tab 1: 정부24 포털 홈 -->
-        <div class="tab-view active" id="tab-home">
-            <div class="home-banner" onclick="switchTab('idcard')">
-                <h3>🆔 주민등록증 모바일 확인서비스</h3>
-                <p>실물 신분증과 동일한 효력을 가진 모바일 신분증 보기 ➔</p>
-            </div>
-            
-            <div class="section-title">자주 찾는 서비스</div>
-            <div class="menu-grid">
-                <div class="menu-btn" onclick="alert('주민등록등본(초본) 발급 화면입니다.')"><span>📄</span>주민등록등본</div>
-                <div class="menu-btn" onclick="alert('전입신고 신청 화면입니다.')"><span>🏠</span>전입신고</div>
-                <div class="menu-btn" onclick="alert('예방접종증명서 발급 화면입니다.')"><span>💉</span>예방접종</div>
-                <div class="menu-btn" onclick="alert('병적증명서 발급 화면입니다.')"><span>🪖</span>병적증명서</div>
-            </div>
-
-            <div class="section-title">공지사항 및 소식</div>
-            <div class="notice-box">
-                [공지] 2026년 상반기 정부24 시스템 고도화 작업 안내 및 서비스 일시 중단 안내
-            </div>
-        </div>
-
-        <!-- Tab 2: 모바일 신분증 카드 (주민등록증) -->
-        <div class="tab-view" id="tab-idcard">
+        <!-- Tab 1: 주민등록증 모바일 확인서비스 (메인) -->
+        <div class="tab-view active" id="tab-idcard">
             <div class="id-card">
-                <div class="security-line"></div>
+                <div class="card-header">
+                    <span class="card-title">주민등록증 모바일 확인서비스</span>
+                    <span class="card-gov">대한민국 정부</span>
+                </div>
                 
                 <div class="profile">
-                    <div class="photo-frame">
+                    <div class="photo-frame" onclick="triggerPhotoUpload()">
                         <img id="user-photo" alt="증명사진">
-                        <div id="photo-placeholder" class="photo-placeholder">사진 없음</div>
+                        <div id="photo-placeholder" class="photo-placeholder">터치하여<br>사진 등록</div>
                     </div>
                     <div class="info-box">
                         <div class="name">박 상 현</div>
                         <div class="birth" id="birth-val">2007.08.28</div>
-                        <div class="address" id="addr-val">경상남도 창원시 마산합포구</div>
+                        <div class="address" id="addr-val">부산광역시 해운대구...</div>
                     </div>
                 </div>
 
                 <div class="qr-wrapper">
                     <div class="qr-box">
-                        <img id="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GOV24_MOBILE_ID" alt="QR코드">
+                        <img id="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GOV24_QR_VERIFIED" alt="QR코드">
                     </div>
                     <div class="timer-container">
-                        <span>남은시간 <span id="timer-sec">30</span>초</span>
+                        <span>남은 시간 <span id="timer-sec">30</span>초</span>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill" id="progress-bar"></div>
@@ -180,83 +118,67 @@
             </div>
 
             <div class="footer">
-                본 모바일 확인서비스는 주민등록법 제24조에 따라 실물 주민등록증과 동일한 효력을 갖습니다.
+                상세정보 표시 시 주민등록번호 및 주소 전체가 노출됩니다.
             </div>
         </div>
 
-        <!-- Tab 3: 민원/신청 서비스 메뉴 -->
-        <div class="tab-view" id="tab-service">
-            <div class="section-title">정부24 주요 서비스</div>
-            <div class="notice-box" onclick="alert('나의 생활정보 통합조회')" style="cursor:pointer;">📊 나의 생활정보 한눈에 보기</div>
-            <div class="notice-box" onclick="alert('보조금24 맞춤 안내')" style="cursor:pointer;">💰 보조금24 수혜금액 확인</div>
-            <div class="notice-box" onclick="alert('정부 간편인증 통합센터')" style="cursor:pointer;">🔐 간편인증 관리 및 등록</div>
+        <!-- Tab 2: 서비스 전체메뉴 -->
+        <div class="tab-view" id="tab-services">
+            <div style="font-size: 0.9rem; font-weight: 700; color: #0f172a; margin-bottom: 4px;">자주 찾는 서비스</div>
+            <div class="menu-grid">
+                <div class="menu-item">주민등록등본</div>
+                <div class="menu-item">전입신고</div>
+                <div class="menu-item">병적증명서</div>
+                <div class="menu-item">소득증명</div>
+                <div class="menu-item">운전경력증명</div>
+                <div class="menu-item">여권발급이력</div>
+            </div>
         </div>
 
-        <!-- Tab 4: 전체메뉴 및 설정 -->
-        <div class="tab-view" id="tab-menu">
-            <div class="section-title">전체 서비스 카테고리</div>
-            <div class="notice-box">• 민원신청 (1,500여 종 서비스 제공)</div>
-            <div class="notice-box">• 정책정보 및 기관별 안내</div>
-            <div class="notice-box" onclick="location.reload()" style="background:#dc2626; color:white; text-align:center; cursor:pointer; font-weight:bold;">앱 잠금 및 초기화</div>
+        <!-- Tab 3: 마이고시/설정 -->
+        <div class="tab-view" id="tab-my">
+            <div style="background: white; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 0.85rem; color: #334155;">
+                <div style="font-weight:700; color:#004098; margin-bottom:6px;">회원 정보</div>
+                <p>이름: 박상현</p>
+                <p>가입 상태: 인증완료</p>
+            </div>
         </div>
     </div>
 
     <!-- 숨겨진 사진 업로드 인풋 -->
     <input type="file" id="file-input" accept="image/*" onchange="handleImageUpload(event)">
 
-    <!-- 5. Bottom Navigation Bar -->
+    <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
-        <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+        <div class="nav-item active" id="nav-idcard" onclick="switchTab('idcard')">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>홈</span>
         </div>
-        <div class="nav-item" id="nav-idcard" onclick="switchTab('idcard')">
-            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-2-8h-6v2h6v-2z"/></svg>
-            <span>신분증</span>
-        </div>
-        <div class="nav-item" id="nav-service" onclick="switchTab('service')">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        <div class="nav-item" id="nav-services" onclick="switchTab('services')">
+            <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
             <span>민원서비스</span>
         </div>
-        <div class="nav-item" id="nav-menu" onclick="switchTab('menu')">
-            <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-            <span>전체메뉴</span>
+        <div class="nav-item" id="nav-my" onclick="switchTab('my')">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            <span>마이페이지</span>
         </div>
     </div>
 </div>
 
 <script>
-    const CORRECT_PIN = "0978";
-    let inputPin = "";
     let timeLeft = 30;
     let isDetailed = false;
-    let secretClickCount = 0;
-    let secretClickTimer = null;
 
     window.onload = function() {
-        setTimeout(() => {
-            document.getElementById('splash-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('splash-screen').style.display = 'none';
-                document.getElementById('lock-screen').classList.remove('hidden');
-            }, 500);
-        }, 1200);
-
         const savedPhoto = localStorage.getItem('gov24_user_photo');
         if (savedPhoto) {
             displayPhoto(savedPhoto);
         }
+        startTimer();
     };
 
-    function handleSecretClick() {
-        secretClickCount++;
-        clearTimeout(secretClickTimer);
-        if (secretClickCount >= 3) {
-            secretClickCount = 0;
-            document.getElementById('file-input').click();
-        } else {
-            secretClickTimer = setTimeout(() => { secretClickCount = 0; }, 1000);
-        }
+    function triggerPhotoUpload() {
+        document.getElementById('file-input').click();
     }
 
     function handleImageUpload(event) {
@@ -280,60 +202,12 @@
         placeholder.style.display = 'none';
     }
 
-    function pressKey(num) {
-        if (inputPin.length < 4) {
-            inputPin += num;
-            updateDots();
-            if (inputPin.length === 4) {
-                setTimeout(checkPin, 100);
-            }
-        }
-    }
-
-    function deleteKey() {
-        if (inputPin.length > 0) {
-            inputPin = inputPin.slice(0, -1);
-            updateDots();
-        }
-    }
-
-    function updateDots() {
-        for (let i = 0; i < 4; i++) {
-            const dot = document.getElementById(`dot-${i}`);
-            if (i < inputPin.length) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        }
-    }
-
-    function checkPin() {
-        if (inputPin === CORRECT_PIN) {
-            document.getElementById('lock-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('lock-screen').style.display = 'none';
-                startTimer();
-            }, 300);
-        } else {
-            alert('비밀번호가 일치하지 않습니다.');
-            inputPin = "";
-            updateDots();
-        }
-    }
-
     function switchTab(tabName) {
         document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
         document.getElementById('tab-' + tabName).classList.add('active');
-        
-        if(document.getElementById('nav-' + tabName)) {
-            document.getElementById('nav-' + tabName).classList.add('active');
-        }
-
-        const titles = { 'home': '정부24 홈', 'idcard': '주민등록증 모바일 확인서비스', 'service': '민원/신청 서비스', 'menu': '전체메뉴' };
-        document.getElementById('header-title').innerText = titles[tabName] || '정부24';
+        document.getElementById('nav-' + tabName).classList.add('active');
     }
 
     function startTimer() {
@@ -348,7 +222,6 @@
         }, 1000);
     }
 
-    // 상세보기 클릭 시 주민번호 뒷자리 풀 표기 및 상세주소 출력
     function toggleDetails() {
         isDetailed = !isDetailed;
         const birth = document.getElementById('birth-val');
@@ -357,11 +230,11 @@
 
         if (isDetailed) {
             birth.innerText = '070828-3123456';
-            addr.innerText = '경상남도 창원시 마산합포구 월영동 123-4';
-            btn.innerText = '기본정보 표시';
+            addr.innerText = '부산광역시 해운대구 센텀중앙로 79 (우동)';
+            btn.innerText = '간편정보 표시';
         } else {
             birth.innerText = '2007.08.28';
-            addr.innerText = '경상남도 창원시 마산합포구';
+            addr.innerText = '부산광역시 해운대구...';
             btn.innerText = '상세정보 표시';
         }
     }
