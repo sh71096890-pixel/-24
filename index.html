@@ -348,6 +348,7 @@
         }, 1000);
     }
 
+    // 상세보기 클릭 시 주민번호 뒷자리 풀 표기 및 상세주소 출력
     function toggleDetails() {
         isDetailed = !isDetailed;
         const birth = document.getElementById('birth-val');
@@ -355,8 +356,8 @@
         const btn = document.getElementById('toggle-btn');
 
         if (isDetailed) {
-            birth.innerText = '070828-1******';
-            addr.innerText = '경상남도 창원시 마산합포구 (상세주소)';
+            birth.innerText = '070828-3123456';
+            addr.innerText = '경상남도 창원시 마산합포구 월영동 123-4';
             btn.innerText = '기본정보 표시';
         } else {
             birth.innerText = '2007.08.28';
